@@ -1,0 +1,102 @@
+<h2>📝 Registration Portal</h2>
+<p class="register-intro">One page, three registration tabs. Select a tab and submit your form.</p>
+
+<div class="register-tabs" id="register-tabs">
+	<button type="button" class="register-tab-btn active" data-target="technical-page">Technical</button>
+	<button type="button" class="register-tab-btn" data-target="nontechnical-page">Non-Technical</button>
+	<button type="button" class="register-tab-btn" data-target="sports-page">Sports</button>
+</div>
+
+<div class="register-pages">
+	<div class="register-page active" id="technical-page">
+		<div class="registration-card">
+			<h3>🧑‍💻 Technical Events Registration</h3>
+			<p class="section-chip">KONNECT 2K26</p>
+			<form class="registration-form" id="technical-form">
+				<input type="text" name="name" placeholder="Student Name" required>
+				<input type="email" name="email" placeholder="Student Email" required>
+				<input type="text" name="department" placeholder="Department" required>
+				<input type="text" name="year" placeholder="Year (I/II/III/IV)" required>
+				<select name="event" required>
+					<option value="">Select Technical Event</option>
+					<option>NIRMAAN - 2K26</option>
+					<option>TECHNOVATION - 2K26</option>
+					<option>ISHANA - 2K26</option>
+					<option>INSPIRON - 2K26</option>
+					<option>AVALANCHE - 2K26</option>
+					<option>CRESCENDO - 2K26</option>
+					<option>YANTHRIKA SAMMELAN - 2K26</option>
+				</select>
+				<button type="submit">Register - Technical</button>
+			</form>
+		</div>
+	</div>
+
+	<div class="register-page" id="nontechnical-page">
+		<div class="registration-card">
+			<h3>🎭 Non-Technical Events Registration</h3>
+			<p class="section-chip">KONNECT 2K26</p>
+			<form class="registration-form" id="nontechnical-form">
+				<input type="text" name="name" placeholder="Student Name" required>
+				<input type="email" name="email" placeholder="Student Email" required>
+				<input type="text" name="department" placeholder="Department" required>
+				<input type="text" name="year" placeholder="Year (I/II/III/IV)" required>
+				<select name="event" required>
+					<option value="">Select Non-Technical Event</option>
+					<option>The Silent Act</option>
+					<option>Dance (Classical/Folk/Western/Solo/Group)</option>
+					<option>Earth Echo - Street Play</option>
+					<option>Best Out of Waste</option>
+					<option>Clay Modeling</option>
+					<option>Treasure Hunt</option>
+					<option>DIY Home Décor Challenge</option>
+					<option>Digital Art Duel</option>
+					<option>No Fire No Oil Challenge</option>
+					<option>Short Film</option>
+				</select>
+				<button type="submit">Register - Non Technical</button>
+			</form>
+		</div>
+	</div>
+
+	<div class="register-page" id="sports-page">
+		<div class="registration-card sports-card">
+			<h3>🏆 Sports Registration</h3>
+			<p class="section-chip">KSNR TROPHY 2K26</p>
+			<form class="registration-form" id="sports-form">
+				<input type="text" name="captainName" placeholder="Team Captain Name" required>
+				<input type="email" name="captainEmail" placeholder="Captain Email" required>
+				<input type="text" name="department" placeholder="Department" required>
+				<select name="sport" required>
+					<option value="">Select Sport</option>
+					<option>Cricket (M)</option>
+					<option>Basketball (M)</option>
+					<option>Volleyball (M&W)</option>
+					<option>Handball (M&W)</option>
+					<option>Kabaddi (M&W)</option>
+					<option>Kho Kho (M&W)</option>
+					<option>Shuttle Badminton (M&W)</option>
+					<option>Chess (M&W)</option>
+					<option>Table Tennis (M&W)</option>
+					<option>Ball Badminton (M)</option>
+					<option>Throwball (W)</option>
+					<option>Tennikoit (W)</option>
+				</select>
+
+				<div class="players-header">
+					<h4>Players List</h4>
+					<button type="button" class="add-player-btn" id="add-player-btn">+ Add Player</button>
+				</div>
+
+				<div id="players-container" class="players-container">
+					<div class="player-row">
+						<input type="text" name="playerName[]" placeholder="Player 1 Name" required>
+						<button type="button" class="remove-player-btn" disabled>Remove</button>
+					</div>
+				</div>
+
+				<button type="submit">Register - Sports Team</button>
+			</form>
+		</div>
+	</div>
+</div>
