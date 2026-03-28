@@ -28,6 +28,60 @@ function initHomeWidgets() {
   return;
 }
 
+function closeMobileNav() {
+  const menuToggle = document.getElementById('mobile-menu-toggle');
+  const navLinks = document.querySelector('.navbar-links');
+  const navTheme = document.querySelector('.navbar-theme');
+
+  if (menuToggle) {
+    menuToggle.setAttribute('aria-expanded', 'false');
+    menuToggle.textContent = '☰';
+  }
+  if (navLinks) {
+    navLinks.classList.remove('mobile-open');
+  }
+  if (navTheme) {
+    navTheme.classList.remove('mobile-open');
+  }
+}
+
+function initMobileNav() {
+  const menuToggle = document.getElementById('mobile-menu-toggle');
+  const navLinks = document.querySelector('.navbar-links');
+  const navTheme = document.querySelector('.navbar-theme');
+
+  if (!menuToggle || !navLinks || !navTheme || menuToggle.dataset.initialized === 'true') {
+    return;
+  }
+
+  const setMenuState = (open) => {
+    navLinks.classList.toggle('mobile-open', open);
+    navTheme.classList.toggle('mobile-open', open);
+    menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    menuToggle.textContent = open ? '✕' : '☰';
+  };
+
+  menuToggle.addEventListener('click', function () {
+    const shouldOpen = !navLinks.classList.contains('mobile-open');
+    setMenuState(shouldOpen);
+  });
+
+  navLinks.addEventListener('click', function (event) {
+    const target = event.target;
+    if (target.classList.contains('nav-link')) {
+      setMenuState(false);
+    }
+  });
+
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 900) {
+      closeMobileNav();
+    }
+  });
+
+  menuToggle.dataset.initialized = 'true';
+}
+
 function initRegisterWidgets() {
   if (!document.body.classList.contains('route-register')) {
     return;
@@ -102,6 +156,8 @@ function initRegisterWidgets() {
 function router() {
   const hash = window.location.hash.slice(1) || 'home';
   const contentContainer = document.getElementById('content');
+
+  closeMobileNav();
   
   // Valid pages
   const validPages = ['home', 'events', 'schedule', 'register'];
@@ -144,6 +200,7 @@ window.addEventListener('hashchange', router);
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', function() {
     initDarkMode();
+    initMobileNav();
     router();
     
     // If no hash is set, default to home
@@ -154,6 +211,7 @@ if (document.readyState === 'loading') {
 } else {
   // DOM is already loaded
   initDarkMode();
+  initMobileNav();
   router();
   
   if (!window.location.hash) {
