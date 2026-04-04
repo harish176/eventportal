@@ -28,6 +28,221 @@ function initHomeWidgets() {
   return;
 }
 
+const REGISTRATION_STORAGE_KEY = 'eventportal_registrations';
+
+function getStoredRegistrations() {
+  try {
+    return JSON.parse(localStorage.getItem(REGISTRATION_STORAGE_KEY) || '[]');
+  } catch (error) {
+    return [];
+  }
+}
+
+function setStoredRegistrations(entries) {
+  localStorage.setItem(REGISTRATION_STORAGE_KEY, JSON.stringify(entries));
+}
+
+function formatSavedAt(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+
+  return date.toLocaleString();
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function renderSavedRegistrations() {
+  const meta = document.getElementById('saved-registrations-meta');
+  const body = document.getElementById('saved-registrations-body');
+
+  if (!meta || !body) {
+    return;
+  }
+
+  const entries = getStoredRegistrations();
+  const visibleEntries = entries.slice(-10).reverse();
+
+  meta.textContent = entries.length
+    ? `Showing latest ${visibleEntries.length} of ${entries.length} saved entries.`
+    : 'No saved registrations yet.';
+
+  body.innerHTML = visibleEntries.map((entry) => {
+    const displayName = entry.type === 'sports' ? entry.captainName : entry.name;
+    const displayEmail = entry.type === 'sports' ? entry.captainEmail : entry.email;
+    const eventName = entry.type === 'sports' ? entry.sport : entry.event;
+    const players = Array.isArray(entry.players) ? entry.players.join(', ') : '';
+
+    return `
+      <tr>
+        <td>${escapeHtml(entry.typeLabel || entry.type || '')}</td>
+        <td>${escapeHtml(displayName || '')}</td>
+        <td>${escapeHtml(displayEmail || '')}</td>
+        <td>${escapeHtml(entry.department || '')}</td>
+        <td>${escapeHtml(eventName || '')}</td>
+        <td>${escapeHtml(players)}</td>
+        <td>${escapeHtml(formatSavedAt(entry.savedAt))}</td>
+      </tr>
+    `;
+  }).join('');
+
+  if (!visibleEntries.length) {
+    body.innerHTML = `
+      <tr>
+        <td colspan="7" class="saved-registrations-empty">No registrations have been saved yet.</td>
+      </tr>
+    `;
+  }
+}
+
+function exportRegistrationsToExcel() {
+  const entries = getStoredRegistrations();
+
+  if (!entries.length) {
+    window.alert('No saved registrations to download.');
+    return;
+  }
+
+  const headers = ['Type', 'Name', 'Email', 'Department', 'Event / Sport', 'Players', 'Saved At'];
+  const rows = entries.map((entry) => {
+    const displayName = entry.type === 'sports' ? entry.captainName : entry.name;
+    const displayEmail = entry.type === 'sports' ? entry.captainEmail : entry.email;
+    const eventName = entry.type === 'sports' ? entry.sport : entry.event;
+    const players = Array.isArray(entry.players) ? entry.players.join(', ') : '';
+
+    return [
+      entry.typeLabel || entry.type || '',
+      displayName || '',
+      displayEmail || '',
+      entry.department || '',
+      eventName || '',
+      players,
+      formatSavedAt(entry.savedAt),
+    ];
+  });
+
+  const tableRows = [headers, ...rows].map((row) => {
+    const cells = row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join('');
+    return `<tr>${cells}</tr>`;
+  }).join('');
+
+  const workbook = `
+    <html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:x="urn:schemas-microsoft-com:office:excel"
+      xmlns="http://www.w3.org/TR/REC-html40">
+      <head>
+        <meta charset="utf-8">
+        <!--[if gte mso 9]>
+        <xml>
+          <x:ExcelWorkbook>
+            <x:ExcelWorksheets>
+              <x:ExcelWorksheet>
+                <x:Name>Registrations</x:Name>
+                <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
+              </x:ExcelWorksheet>
+            </x:ExcelWorksheets>
+          </x:ExcelWorkbook>
+        </xml>
+        <![endif]-->
+      </head>
+      <body>
+        <table border="1">${tableRows}</table>
+      </body>
+    </html>`;
+
+  const blob = new Blob([workbook], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'registrations.xls';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function getRegistrationTypeLabel(formId) {
+  if (formId === 'technical-form') {
+    return 'Technical';
+  }
+
+  if (formId === 'nontechnical-form') {
+    return 'Non-Technical';
+  }
+
+  if (formId === 'sports-form') {
+    return 'Sports';
+  }
+
+  return formId;
+}
+
+function handleRegistrationSubmit(event) {
+  event.preventDefault();
+
+  const form = event.currentTarget;
+  const formData = new FormData(form);
+  const formId = form.id;
+  const typeLabel = getRegistrationTypeLabel(formId);
+  const savedAt = new Date().toISOString();
+  const entries = getStoredRegistrations();
+  const baseRecord = {
+    id: `${savedAt}-${Math.random().toString(36).slice(2, 8)}`,
+    type: formId.replace('-form', ''),
+    typeLabel,
+    savedAt,
+  };
+
+  if (formId === 'sports-form') {
+    const players = formData.getAll('playerName[]')
+      .map((value) => String(value).trim())
+      .filter(Boolean);
+
+    entries.push({
+      ...baseRecord,
+      captainName: String(formData.get('captainName') || '').trim(),
+      captainEmail: String(formData.get('captainEmail') || '').trim(),
+      department: String(formData.get('department') || '').trim(),
+      sport: String(formData.get('sport') || '').trim(),
+      players,
+    });
+
+    form.reset();
+    const playersContainer = document.getElementById('players-container');
+    if (playersContainer) {
+      playersContainer.innerHTML = `
+        <div class="player-row">
+          <input type="text" name="playerName[]" placeholder="Player 1 Name" required>
+          <button type="button" class="remove-player-btn" disabled>Remove</button>
+        </div>
+      `;
+    }
+  } else {
+    entries.push({
+      ...baseRecord,
+      name: String(formData.get('name') || '').trim(),
+      email: String(formData.get('email') || '').trim(),
+      department: String(formData.get('department') || '').trim(),
+      year: String(formData.get('year') || '').trim(),
+      event: String(formData.get('event') || '').trim(),
+    });
+
+    form.reset();
+  }
+
+  setStoredRegistrations(entries);
+  renderSavedRegistrations();
+  window.alert('Registration saved locally.');
+}
+
 function closeMobileNav() {
   const menuToggle = document.getElementById('mobile-menu-toggle');
   const navLinks = document.querySelector('.navbar-links');
@@ -106,10 +321,22 @@ function initRegisterWidgets() {
     });
   }
 
+  const registrationForms = document.querySelectorAll('.registration-form');
+  registrationForms.forEach((form) => {
+    form.addEventListener('submit', handleRegistrationSubmit);
+  });
+
+  const exportButton = document.getElementById('export-registrations-btn');
+  if (exportButton && exportButton.dataset.initialized !== 'true') {
+    exportButton.addEventListener('click', exportRegistrationsToExcel);
+    exportButton.dataset.initialized = 'true';
+  }
+
   const addPlayerBtn = document.getElementById('add-player-btn');
   const playersContainer = document.getElementById('players-container');
 
   if (!addPlayerBtn || !playersContainer) {
+    renderSavedRegistrations();
     return;
   }
 

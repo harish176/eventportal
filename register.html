@@ -1,4 +1,4 @@
-<h2>📝 Registration Portal</h2>
+<h2> Registration Portal</h2>
 <p class="register-intro">One page, three registration tabs. Select a tab and submit your form.</p>
 
 <div class="register-tabs" id="register-tabs">
@@ -6,6 +6,8 @@
 	<button type="button" class="register-tab-btn" data-target="nontechnical-page">Non-Technical</button>
 	<button type="button" class="register-tab-btn" data-target="sports-page">Sports</button>
 </div>
+
+
 
 <div class="register-pages">
 	<div class="register-page active" id="technical-page">
@@ -99,4 +101,33 @@
 			</form>
 		</div>
 	</div>
+
+	<div class="saved-registrations" id="saved-registrations-section">
+	<div class="saved-registrations-header">
+		<div>
+			<h3>Saved Registrations</h3>
+			<p class="saved-registrations-note">Latest 10 entries are shown here. All submissions stay stored in your browser.</p>
+		</div>
+		<button type="button" class="export-registrations-btn" id="export-registrations-btn">Download Excel</button>
+	</div>
+
+	<div class="saved-registrations-meta" id="saved-registrations-meta"></div>
+
+	<div class="saved-registrations-table-wrap">
+		<table class="saved-registrations-table">
+			<thead>
+				<tr>
+					<th>Type</th>
+					<th>Name</th>
+					<th>Email</th>
+					<th>Department</th>
+					<th>Event / Sport</th>
+					<th>Players</th>
+					<th>Saved At</th>
+				</tr>
+			</thead>
+			<tbody id="saved-registrations-body"></tbody>
+		</table>
+	</div>
+</div>
 </div>

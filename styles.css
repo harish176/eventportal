@@ -217,13 +217,16 @@ section {
 body.route-home #content {
   max-width: 100%;
   width: 100%;
-  padding-left: 3.2vw;
-  padding-right: 3.2vw;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 body.route-home .hero {
   max-width: 100%;
-  padding: 92px 52px;
+  min-height: 100vh;
+  padding: 48px 24px;
+  border-radius: 0;
+  margin-bottom: 0;
 }
 
 body.route-home .hero h2 {
@@ -684,10 +687,95 @@ body.route-register .registration-form button {
   padding: 13px 20px;
 }
 
+body.route-register .saved-registrations {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+  padding: 26px;
+  max-width: 1180px;
+  margin: 24px auto 20px;
+  text-align: left;
+}
+
+.saved-registrations-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.saved-registrations-header h3 {
+  color: var(--accent-color);
+  font-size: 1.8rem;
+  margin-bottom: 6px;
+}
+
+.saved-registrations-note {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.saved-registrations-meta {
+  margin-bottom: 14px;
+  color: var(--text-light);
+  font-size: 0.98rem;
+}
+
+.export-registrations-btn {
+  background: var(--accent-color);
+  color: #ffffff;
+  margin-top: 0;
+  white-space: nowrap;
+}
+
+.export-registrations-btn:hover {
+  background: var(--accent-hover);
+}
+
+.saved-registrations-table-wrap {
+  overflow-x: auto;
+}
+
+.saved-registrations-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+
+.saved-registrations-table th,
+.saved-registrations-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: top;
+  font-size: 0.95rem;
+}
+
+.saved-registrations-table th {
+  text-align: left;
+  color: var(--text-primary);
+  font-weight: 700;
+  background: rgba(var(--accent-rgb), 0.08);
+}
+
+.saved-registrations-table td {
+  color: var(--text-secondary);
+}
+
+.saved-registrations-empty {
+  text-align: center;
+  color: var(--text-light);
+  padding: 22px 14px;
+}
+
+.saved-registrations {
+  margin-bottom: 20px;
+}
+
 .sports-card {
   max-width: 1100px;
 }
-
 .players-header {
   display: flex;
   align-items: center;
@@ -1127,8 +1215,8 @@ body:not(.dark-mode) .home-btn-cta:hover {
   body.route-events #content,
   body.route-schedule #content,
   body.route-register #content {
-    padding-left: 12px;
-    padding-right: 12px;
+    padding-left: 0;
+    padding-right: 0;
   }
 
   body.route-home .hero h2,
@@ -1355,6 +1443,18 @@ body:not(.dark-mode) .home-btn-cta:hover {
 
   body.route-register .registration-form button {
     font-size: 0.98rem;
+  }
+
+  .saved-registrations {
+    padding: 18px;
+  }
+
+  .saved-registrations-header {
+    flex-direction: column;
+  }
+
+  .saved-registrations-table {
+    min-width: 760px;
   }
 
   .players-header {
